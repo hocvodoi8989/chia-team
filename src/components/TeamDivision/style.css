@@ -1,0 +1,39 @@
+/* #status {
+    display: none;
+}
+
+#btnStart {
+    margin: auto;
+    padding: 4px 8px; 
+    background-color: aqua;
+}
+
+#chiateam {
+    margin: auto; 
+    display: none;
+}
+
+#status_congrast {
+    text-align: center; 
+    display: none; 
+    padding-top: 50px;
+} */
+
+
+
+th {
+    width: 100px;
+}
+
+.heading {
+    margin-bottom: 30px;
+    margin-top: 10px;
+}
+
+.status {
+    display: none;
+}
+
+.btn-chia {
+    margin-bottom: 20px;
+}
