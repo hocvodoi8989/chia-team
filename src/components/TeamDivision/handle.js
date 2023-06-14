@@ -85,20 +85,7 @@ const init = async () => {
    
 }
 
-export { team, 
-    genTBody, 
-    main, 
-    sleep, 
-    init, 
-    Group, 
-    Team1, 
-    Team2,
-    maxLength,
-    test,
-    statusLabel,
-    tbl,
-    btnStart,
-    statusCongrast };
+
 
 
 

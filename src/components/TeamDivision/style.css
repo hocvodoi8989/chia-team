@@ -1,25 +1,26 @@
-/* #status {
-    display: none;
+.wrapper {
+    background-color: #1f1f1f;
+    color: #fff;
 }
 
-#btnStart {
-    margin: auto;
-    padding: 4px 8px; 
-    background-color: aqua;
+.top-table {
+    display: flex;
+    justify-content: space-around;
 }
 
-#chiateam {
-    margin: auto; 
-    display: none;
+.list-member,
+.handle-table {
+    width: 40%;
 }
 
-#status_congrast {
-    text-align: center; 
-    display: none; 
-    padding-top: 50px;
-} */
+.bot-table {
+    width: 50%;
+    margin: 0 auto;
+}
 
-
+table {
+    background-color: #2f2f2f;
+}
 
 th {
     width: 100px;
@@ -34,6 +35,6 @@ th {
     display: none;
 }
 
-.btn-chia {
+.btn-submit {
     margin-bottom: 20px;
 }

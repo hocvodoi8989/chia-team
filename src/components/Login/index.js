@@ -1,8 +1,19 @@
+import React, { useState } from 'react'
+// import { useHistory } from 'react-router-dom'
+
 import "./style.css"
 import logo from "./logo1.png"
 import image from "./team.jpg"
 
 const Login = () => {
+  
+  const [username, setUsername] = useState('')
+  // const history = useHistory()
+  
+  // const handleLogin = () => {
+  //   history.push('../TeamDivision/index.js')
+  // }
+
     return (
         <section className="h-100 gradient-form">
         <div className="container py-5 h-100">
@@ -26,10 +37,11 @@ const Login = () => {
                         <div className="form-outline mb-4">
                           <input
                             type="email"
-                            id="form2Example11"
+                            id="use-name"
                             className="form-control"
-                            placeholder="Phone number or email address"
-                          />
+                            value={username}
+                            onChange={event => setUsername(event.target.value)}
+                          />{""}
                           <label className="form-label" for="form2Example11">
                             Username
                           </label>
@@ -38,7 +50,7 @@ const Login = () => {
                         <div className="form-outline mb-4">
                           <input
                             type="password"
-                            id="form2Example22"
+                            id="password"
                             className="form-control"
                           />
                           <label className="form-label" for="form2Example22">
@@ -50,6 +62,7 @@ const Login = () => {
                           <button
                             className="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
                             type="button"
+                            // onclick={handleLogin}
                           >
                             Log in
                           </button>
