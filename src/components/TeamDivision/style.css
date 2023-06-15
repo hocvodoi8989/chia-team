@@ -13,11 +13,19 @@
     width: 40%;
 }
 
+.box-name {
+    width: 150px;
+    height: 30px;
+    /* background-color: #fff; */
+    margin: 0 auto;
+}
+
 .bot-table {
     width: 50%;
     margin: 0 auto;
 }
 
+.bg-color,
 table {
     background-color: #2f2f2f;
 }

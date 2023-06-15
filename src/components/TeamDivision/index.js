@@ -1,6 +1,7 @@
-import { useState } from "react";
+// import { useState } from "react";
 import { createElement } from "react";
 import "./style.css";
+import Draggable from 'react-draggable';
 // import {useEffect} from 'react';
 
 const TeamDivision = () => {
@@ -88,6 +89,31 @@ const TeamDivision = () => {
     main();
   };
 
+  var boxNames = document.querySelectorAll('.box-name')
+  var itemTargets = document.querySelector('.name-target')
+  var currentTarget = null
+
+  // itemTargets.forEach(target => {
+  //   target.addEventListener('dragstart', function(e) {
+  //     currentTarget = this
+  //   })
+  //   target.addEventListener('dragend', function(e) {
+      
+      
+  //   })
+  // })
+  console.log('boxname', boxNames)
+  boxNames.forEach(box => {
+    box.addEventListener('dragover', function(e) {
+      e.preventDefault()
+      console.log('dragover')
+      this.appendChild(itemTargets)
+    })
+    box.addEventListener('drop', function(e) {
+      console.log('drop')
+    })
+  })
+
   return (
     <div className="fuild-container text-center wrapper">
       <div className="top-table">
@@ -105,42 +131,68 @@ const TeamDivision = () => {
             <tbody>
               <tr>
                 <th scope="row">1</th>
-                <td>Vũ</td>
+                {/* <Draggable> */}
+                  <td draggable='true' className="name-target">A Koi + Sáng</td>
+                {/* </Draggable> */}
                 <td>2</td>
-                <td>Sáng</td>
+                {/* <Draggable> */}
+                  <td className="name-target">A Thuận + Việt</td>
+                {/* </Draggable> */}
               </tr>
               <tr>
                 <th scope="row">3</th>
-                <td>Vũ</td>
+                {/* <Draggable> */}
+                  <td className="name-target">A Thanh + Toản</td>
+                {/* </Draggable> */}
                 <td>4</td>
-                <td>Sáng</td>
+                {/* <Draggable> */}
+                  <td className="name-target">A Đạt 93 + Hoàng</td>
+                {/* </Draggable> */}
               </tr>
               <tr>
                 <th scope="row">5</th>
-                <td>Vũ</td>
+                {/* <Draggable> */}
+                  <td className="name-target">Đức Anh t3</td>
+                {/* </Draggable> */}
                 <td>6</td>
-                <td>Sáng</td>
+                {/* <Draggable> */}
+                  <td className="name-target">Long</td>
+                {/* </Draggable> */}
               </tr>
               <tr>
                 <th scope="row">7</th>
-                <td>Vũ</td>
+                {/* <Draggable> */}
+                  <td className="name-target">A Zik + Học</td>
+                {/* </Draggable> */}
                 <td>8</td>
-                <td>Sáng</td>
+                {/* <Draggable> */}
+                  <td className="name-target">A Bình + Hoàng (bạn Toản)</td>
+                {/* </Draggable> */}
               </tr>
               <tr>
                 <th scope="row">9</th>
-                <td>Vũ</td>
+                {/* <Draggable> */}
+                  <td className="name-target">A Đức + A Trường</td>
+                {/* </Draggable> */}
                 <td>10</td>
-                <td>Sáng</td>
+                {/* <Draggable> */}
+                  <td className="name-target">Tuấn + A Duy</td>
+                {/* </Draggable> */}
               </tr>
               <tr>
                 <th scope="row">11</th>
-                <td>Vũ</td>
+                {/* <Draggable> */}
+                  <td className="name-target">Sinh + Thành</td>
+                {/* </Draggable> */}
                 <td>12</td>
-                <td>Sáng</td>
+                {/* <Draggable> */}
+                  <td className="name-target">Vũ + Đạt</td>
+                {/* </Draggable> */}
               </tr><tr>
                 <th scope="row">13</th>
-                <td>Vũ</td>
+                {/* <Draggable> */}
+                  <td className="name-target">Khanh</td>
+                {/* </Draggable> */}
                 <td>14</td>
                 
               </tr>
@@ -162,57 +214,58 @@ const TeamDivision = () => {
               <tr>
                 <th scope="row">1</th>
                 <td>
-                  <input className="ip-name-1" />
+                  <div className="box-name"></div>
                 </td>
                 <td>
-                  <input className="ip-name-2" />
+                  <div className="box-name"></div>
                 </td>
               </tr>
               <tr>
                 <th scope="row">2</th>
                 <td>
-                  <input className="ip-name-1" />
+                  <div className="box-name"></div>
                 </td>
                 <td>
-                  <input className="ip-name-2" />
+                  <div className="box-name"></div>
                 </td>
               </tr>
               <tr>
                 <th scope="row">3</th>
                 <td>
-                  <input className="ip-name-1" />
+                  <div className="box-name"></div>
                 </td>
                 <td>
-                  <input className="ip-name-2" />
+                  <div className="box-name"></div>
                 </td>
               </tr>
               <tr>
                 <th scope="row">4</th>
                 <td>
-                  <input className="ip-name-1" />
+                  <div className="box-name"></div>
                 </td>
                 <td>
-                  <input className="ip-name-2" />
+                  <div className="box-name"></div>
                 </td>
               </tr>
               <tr>
                 <th scope="row">5</th>
                 <td>
-                  <input className="ip-name-1" />
+                  <div className="box-name"></div>
                 </td>
                 <td>
-                  <input className="ip-name-2" />
+                  <div className="box-name"></div>
                 </td>
               </tr>
               <tr>
                 <th scope="row">6</th>
                 <td>
-                  <input className="ip-name-1" />
+                  <div className="box-name"></div>
                 </td>
                 <td>
-                  <input className="ip-name-2" />
+                  <div className="box-name"></div>
                 </td>
               </tr>
+              
             </tbody>
           </table>
         </div>
