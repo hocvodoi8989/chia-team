@@ -1,19 +1,17 @@
 import React from "react";
-import Header from "./components/Header";
-import Login from "./components/Login";
 import MainHistory from "./components/MainHistory";
-import TeamDivision from "./components/TeamDivision";
+import Division from "./components/TeamDivision";
+import { DragDropContext } from 'react-beautiful-dnd';
 
 
 function App() {
   return (
-    <div className="App">
-      <Header />
-      {/* <MainHistory /> */}
-      {/* <Login /> */}
-      <TeamDivision />
-    </div>
-    // 
+    <DragDropContext>
+        <div className="App">
+          <Division />
+      </div>
+    </DragDropContext>
+    
   );
 }
 

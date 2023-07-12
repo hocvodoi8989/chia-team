@@ -1,48 +1,20 @@
+#root {
+    user-select: none;
+}
+
 .wrapper {
     background-color: #1f1f1f;
     color: #fff;
+    justify-content: space-evenly;
+    padding: 20px 0;
 }
 
-.top-table {
-    display: flex;
-    justify-content: space-around;
+.member-drag:hover {
+    cursor: pointer;
 }
 
-.list-member,
-.handle-table {
-    width: 40%;
-}
-
-.box-name {
-    width: 150px;
-    height: 30px;
-    /* background-color: #fff; */
-    margin: 0 auto;
-}
-
-.bot-table {
-    width: 50%;
-    margin: 0 auto;
-}
-
-.bg-color,
-table {
-    background-color: #2f2f2f;
-}
-
-th {
-    width: 100px;
-}
-
-.heading {
-    margin-bottom: 30px;
-    margin-top: 10px;
-}
-
-.status {
-    display: none;
-}
-
-.btn-submit {
-    margin-bottom: 20px;
+.member-handle {
+    background-color: #1f1f1f;
+    color: #fff;
+    justify-content: center;
 }
