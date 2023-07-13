@@ -18,3 +18,12 @@
     color: #fff;
     justify-content: center;
 }
+
+.table-handle {
+    width: 20%;
+}
+
+.total-table {
+    display: flex;
+    justify-content: center;
+}

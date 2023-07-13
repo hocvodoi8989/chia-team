@@ -47,6 +47,28 @@ const tbl = document.getElementById("chiateam");
 const btnStart = document.getElementById("btnStart");
 const statusCongrast = document.getElementById("status_congrast");
 
+const init = async () => {
+    btnStart.style.display = "none"
+    statusLabel.style.display = "block"
+    await sleep(3000);
+    statusLabel.style.display = "none"
+    tbl.style.display = "inline-block"
+    main();
+}
+
+const sleep = (milliseconds) => {
+    return new Promise((r)=> setTimeout(() => {
+        return r();
+    }, milliseconds))
+}
+
+const main = async () => {
+    for(let i = 0; i < maxLength ; i++){
+        // await sleep();
+        setTimeout(()=> genTBody(i), i * 1000);
+    }
+}
+
 const genTBody = (index) => {
     team(index);
     let tbBody = '';
@@ -59,30 +81,6 @@ const genTBody = (index) => {
     }
     test.innerHTML = tbBody;
     if(index >= maxLength - 1)  statusCongrast.style.display = "inline-block";
-}
-    
-const main = async () => {
-    for(let i = 0; i < maxLength ; i++){
-        // await sleep();
-        setTimeout(()=> genTBody(i), i * 1000);
-    }
-   
-}
-
-const sleep = (milliseconds) => {
-    return new Promise((r)=> setTimeout(() => {
-        return r();
-    }, milliseconds))
-}
-
-const init = async () => {
-    btnStart.style.display = "none"
-    statusLabel.style.display = "block"
-    await sleep(3000);
-    statusLabel.style.display = "none"
-    tbl.style.display = "inline-block"
-    main();
-   
 }
 
 
