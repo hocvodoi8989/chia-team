@@ -1,12 +1,12 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import "./style.css";
 
 const Division = () => {
   const [team1, setTeam1] = useState([]);
   const [team2, setTeam2] = useState([]);
 
-  const [handleTeam1, setHandleteam1] = useState([])
-  const [handleTeam2, setHandleteam2] = useState([])
+  const [handleTeam1, setHandleteam1] = useState([]);
+  const [handleTeam2, setHandleteam2] = useState([]);
 
   const [member, setMember] = useState("");
   const [members, setmembers] = useState([]);
@@ -14,7 +14,7 @@ const Division = () => {
   const inputFocus = useRef();
   const nodeTarget = useRef();
 
-  const maxLength = team1.length > team2.length ? team1.length : team2.length
+  const maxLength = team1.length > team2.length ? team1.length : team2.length;
 
   const [memberSort, setMemberSort] = useState("");
 
@@ -35,6 +35,7 @@ const Division = () => {
   const dragStart = (e) => {
     const value = e.target.getAttribute("value");
     setMemberSort(value);
+    setMember("");
   };
 
   const dragOver = (e) => {
@@ -51,35 +52,50 @@ const Division = () => {
       setTeam1((prev) => [...prev, memberSort]);
     }
   };
-  
-  const handleSplit = async () => {
-    for (let i = 0; i < maxLength; i++) {
-      main(i)
-    }
-  }
 
-  const main = (index) => {
-    
-    let random = Math.floor(Math.random()*2)
+  const init = async () => {
+    setHandleteam1([]);
+    setHandleteam2([]);
+    await sleep(2000);
+    main();
+  };
+
+  const team = (index) => {
+    let random = Math.floor(Math.random() * 2);
 
     if (random === 0) {
-      setHandleteam1((prev) => [...prev, team1[index]])
-      setHandleteam2((prev) => [...prev, team2[index]])
+      setHandleteam1((prev) => [...prev, team1[index]]);
+      setHandleteam2((prev) => [...prev, team2[index]]);
     }
 
     if (random === 1) {
-      setHandleteam1((prev) => [...prev, team2[index]])
-      setHandleteam2((prev) => [...prev, team1[index]])
+      setHandleteam1((prev) => [...prev, team2[index]]);
+      setHandleteam2((prev) => [...prev, team1[index]]);
     }
-    
-    
 
-  }
 
-  // const groups = [...[handleTeam1], ...[handleTeam2]]
-  // console.log(groups)
-  // console.log(groups[0])
-  // console.log(groups[1])
+  };
+
+  const sleep = (milisecond) => {
+    return new Promise((r) =>
+      setTimeout(() => {
+        return r();
+      }, milisecond)
+    );
+  };
+
+  const main = async () => {
+    for (let i = 0; i < maxLength; i++) {
+      setTimeout(() => genTBody(i), i * 1500);
+    }
+  };
+
+  const genTBody = (index) => {
+    team(index);
+  };
+
+  
+  
   
 
   return (
@@ -93,15 +109,15 @@ const Division = () => {
             onChange={(e) => setMember(e.target.value)}
             onKeyDown={onKeyPress}
             placeholder="Nhập thành viên..."
+            name="name"
+            id="name"
           />
           <button onClick={AddUser} onKeyDown={onKeyPress}>
             Thêm
           </button>
-          <table className="table table-bordered text-center mt-3">
+          <table className="table table-bordered text-center mt-3 table-input">
             <thead>
               <tr>
-                <th scope="col">#</th>
-                <th scope="col">Thành viên</th>
                 <th scope="col">#</th>
                 <th scope="col">Thành viên</th>
               </tr>
@@ -109,7 +125,7 @@ const Division = () => {
             <tbody>
               {members.map((member, index) => (
                 <tr key={index}>
-                  <th>{index}</th>
+                  <td>{index}</td>
                   <td
                     draggable="true"
                     className="member-drag"
@@ -125,7 +141,7 @@ const Division = () => {
         </div>
         <div className="member-drag text-center">
           <h3 style={{ marginTop: 6 }}>Chọn thành viên</h3>
-          <table className="table table-bordered text-center mt-5">
+          <table className="table table-bordered text-center mt-5 table-handle">
             <thead>
               <tr>
                 <th scope="col">#</th>
@@ -177,47 +193,53 @@ const Division = () => {
                 <td>14</td>
                 <td onDragOver={dragOver} onDrop={drop}></td>
               </tr>
+              <tr>
+                <td>15</td>
+                <td onDragOver={dragOver} onDrop={drop}></td>
+                <td>16</td>
+                <td onDragOver={dragOver} onDrop={drop}></td>
+              </tr>
             </tbody>
           </table>
         </div>
       </div>
       <div className="member-handle text-center">
-        <button type="button" className="btn btn-primary" onClick={handleSplit}>
+        <button type="button" className="btn btn-primary" onClick={init}>
           Chia
         </button>
         <div className="total-table">
-        <table className="table table-bordered text-center mt-5 table-handle">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Đội 1</th>
-            </tr>
-          </thead>
-          <tbody>
-            {handleTeam1.map((handle1, index) => (
-              <tr key={index}>
-                <td>{index}</td>
-                <td>{handle1}</td>
+          <table className="table table-bordered text-center mt-5 table-output">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Đội 1</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-        <table className="table table-bordered text-center mt-5 ml-5 table-handle">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Đội 2</th>
-            </tr>
-          </thead>
-          <tbody>
-            {handleTeam2.map((handle2, index) => (
-              <tr key={index}>
-                <td>{index}</td>
-                <td>{handle2}</td>
+            </thead>
+            <tbody>
+              {handleTeam1.map((handle1, index) => (
+                <tr key={index}>
+                  <td>{index}</td>
+                  <td>{handle1}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <table className="table table-bordered text-center mt-5 ml-5 table-output">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Đội 2</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {handleTeam2.map((handle2, index) => (
+                <tr key={index}>
+                  <td>{index}</td>
+                  <td>{handle2}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

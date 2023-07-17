@@ -2,8 +2,12 @@
     user-select: none;
 }
 
-.wrapper {
+.app {
+    height: 2000px;
     background-color: #1f1f1f;
+}
+
+.wrapper {
     color: #fff;
     justify-content: space-evenly;
     padding: 20px 0;
@@ -14,16 +18,24 @@
 }
 
 .member-handle {
-    background-color: #1f1f1f;
     color: #fff;
     justify-content: center;
 }
 
-.table-handle {
-    width: 20%;
+.table-handle,
+.table-input {
+    width: 500px;
+}
+
+.table-output {
+    width: 300px;
 }
 
 .total-table {
     display: flex;
     justify-content: center;
 }
+
+/* .delete {
+    display: none;
+} */
