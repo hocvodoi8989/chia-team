@@ -5,32 +5,56 @@ const Division = () => {
   const [team1, setTeam1] = useState([]);
   const [team2, setTeam2] = useState([]);
 
+  
+
   const [handleTeam1, setHandleteam1] = useState([]);
   const [handleTeam2, setHandleteam2] = useState([]);
 
   const [member, setMember] = useState("");
-  const [members, setmembers] = useState([]);
+  const [members, setmembers] = useState(() => {
+    const storageMember = JSON.parse(localStorage.getItem('name'))
+    return storageMember ?? []
+  });
   // const [editing, setEditing] = useState(false)
   const inputFocus = useRef();
-  const nodeTarget = useRef();
+  const inputMember = useRef();
 
   const maxLength = team1.length > team2.length ? team1.length : team2.length;
 
   const [memberSort, setMemberSort] = useState("");
 
+  console.log(localStorage.setItem('team1', handleTeam1))
+  console.log(localStorage.setItem('team2', handleTeam2))
+
   const AddUser = () => {
-    setmembers((prev) => [...prev, member]);
+    setmembers((prev) => {
+      const newMembers = [...prev, member]
+      const jsonMembers = JSON.stringify(newMembers)
+      localStorage.setItem('name', jsonMembers)
+      return newMembers
+    })
+    
     setMember("");
     inputFocus.current.focus();
   };
 
   const onKeyPress = (e) => {
     if (e.key === "Enter") {
-      setmembers((prev) => [...prev, member]);
+      setmembers((prev) => {
+        const newMembers = [...prev, member]
+        const jsonMembers = JSON.stringify(newMembers)
+        localStorage.setItem('name', jsonMembers)
+        return newMembers
+      })
       setMember("");
       inputFocus.current.focus();
     }
   };
+
+  const deleteLocal = () => {
+    localStorage.removeItem('name')
+    setmembers([])
+  }
 
   const dragStart = (e) => {
     const value = e.target.getAttribute("value");
@@ -58,6 +82,8 @@ const Division = () => {
     setHandleteam2([]);
     await sleep(2000);
     main();
+    localStorage.setItem('team1', JSON.stringify(handleTeam1))
+    localStorage.setItem('team2', JSON.stringify(handleTeam2))
   };
 
   const team = (index) => {
@@ -72,8 +98,6 @@ const Division = () => {
       setHandleteam1((prev) => [...prev, team2[index]]);
       setHandleteam2((prev) => [...prev, team1[index]]);
     }
-
-
   };
 
   const sleep = (milisecond) => {
@@ -94,27 +118,24 @@ const Division = () => {
     team(index);
   };
 
-  
-  
-  
-
   return (
     <div className="fuild-container app">
       <div className="wrapper d-flex">
         <div className="member text-center">
           <h3>Thêm thành viên</h3>
-          <input
-            ref={inputFocus}
-            value={member}
-            onChange={(e) => setMember(e.target.value)}
-            onKeyDown={onKeyPress}
-            placeholder="Nhập thành viên..."
-            name="name"
-            id="name"
-          />
-          <button onClick={AddUser} onKeyDown={onKeyPress}>
-            Thêm
-          </button>
+          <div className="ip-wrap">
+            <input
+              ref={inputFocus}
+              value={member}
+              onChange={(e) => setMember(e.target.value)}
+              onKeyDown={onKeyPress}
+              placeholder="Nhập thành viên..."
+            />
+            <button type="button" className="btn btn-primary ml-1" onClick={AddUser} onKeyDown={onKeyPress}>
+              Thêm
+            </button>
+          </div>
+          
           <table className="table table-bordered text-center mt-3 table-input">
             <thead>
               <tr>
@@ -127,6 +148,7 @@ const Division = () => {
                 <tr key={index}>
                   <td>{index}</td>
                   <td
+                    ref={inputMember}
                     draggable="true"
                     className="member-drag"
                     onDragStart={dragStart}
@@ -138,6 +160,9 @@ const Division = () => {
               ))}
             </tbody>
           </table>
+          <button type="button" className="btn btn-primary" onClick={deleteLocal}>
+          Xóa
+          </button>
         </div>
         <div className="member-drag text-center">
           <h3 style={{ marginTop: 6 }}>Chọn thành viên</h3>
@@ -153,7 +178,7 @@ const Division = () => {
             <tbody className="table-target">
               <tr>
                 <td>1</td>
-                <td ref={nodeTarget} onDragOver={dragOver} onDrop={drop}></td>
+                <td onDragOver={dragOver} onDrop={drop}></td>
                 <td>2</td>
                 <td onDragOver={dragOver} onDrop={drop}></td>
               </tr>

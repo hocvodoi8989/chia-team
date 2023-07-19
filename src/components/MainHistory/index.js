@@ -3,7 +3,7 @@ import "./style.css";
 const MainHistory = () => {
   return (
     <main className="app">
-      <div class="container-fluid text-center">
+      <div class="container-fluid text-center wrapper">
         <h1 className="heading mb-3">Lịch sử</h1>
         <div class="row box-table">
           <div class="col">
