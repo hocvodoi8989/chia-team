@@ -22,6 +22,15 @@
     font-size: 14px;
 }
 
+.member,
+.member-drag {
+    width: 30%;
+}
+
+.member-drag {
+    width: 600px;
+} 
+
 .member-drag:hover {
     cursor: pointer;
 }
@@ -31,11 +40,6 @@
     justify-content: center;
 }
 
-.table-handle,
-.table-input {
-    width: 500px;
-}
-
 .table-output {
     width: 300px;
 }
@@ -43,4 +47,22 @@
 .total-table {
     display: flex;
     justify-content: center;
+}
+
+.colBd {
+    border: 1px solid #fff;
+}
+
+.wrap-tb {
+    display: flex;
+    justify-content: center;
+}
+
+.hight-row {
+    height: 44px;
+    width: 350px;
+}
+
+.hide {
+    display: none;
 }

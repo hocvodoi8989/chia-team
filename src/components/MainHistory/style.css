@@ -1,5 +1,6 @@
 .box-table {
-    gap: 10px;
+    column-gap: 90px;
+    row-gap: 40px;
 }
 
 .month {

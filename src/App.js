@@ -1,20 +1,20 @@
 import React from "react"; 
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 // import MainHistory from "./components/MainHistory";
-import Header from "./components/Header/Header";
-import Division from "./components/TeamDivision";
-import Footer from "./components/Footer/Footer";
+import Home from "./components/Home";
+import History from "./components/MainHistory";
 
  
 
 function App() {
   return (
-    <div className="App">
-      <Header />
-      {/* <FormLogin /> */}
-      {/* <MainHistory /> */}
-      <Division />
-      <Footer />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/history" element={<History />} />
+      </Routes>
+    </Router>
+    
   );
 }
 

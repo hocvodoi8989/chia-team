@@ -1,39 +1,34 @@
 import React, { useState, useRef } from "react";
 import "./style.css";
 
-const Division = () => {
+const TeamDivision = () => {
   const [team1, setTeam1] = useState([]);
   const [team2, setTeam2] = useState([]);
-
-  
 
   const [handleTeam1, setHandleteam1] = useState([]);
   const [handleTeam2, setHandleteam2] = useState([]);
 
   const [member, setMember] = useState("");
   const [members, setmembers] = useState(() => {
-    const storageMember = JSON.parse(localStorage.getItem('name'))
-    return storageMember ?? []
+    const storageMember = JSON.parse(localStorage.getItem("name"));
+    return storageMember ?? [];
   });
   // const [editing, setEditing] = useState(false)
   const inputFocus = useRef();
   const inputMember = useRef();
+  const genName = useRef();
 
   const maxLength = team1.length > team2.length ? team1.length : team2.length;
 
   const [memberSort, setMemberSort] = useState("");
 
-  console.log(localStorage.setItem('team1', handleTeam1))
-  console.log(localStorage.setItem('team2', handleTeam2))
-
   const AddUser = () => {
     setmembers((prev) => {
-      const newMembers = [...prev, member]
-      const jsonMembers = JSON.stringify(newMembers)
-      localStorage.setItem('name', jsonMembers)
-      return newMembers
-    })
-    
+      const newMembers = [...prev, member];
+      const jsonMembers = JSON.stringify(newMembers);
+      localStorage.setItem("name", jsonMembers);
+      return newMembers;
+    });
     setMember("");
     inputFocus.current.focus();
   };
@@ -41,25 +36,24 @@ const Division = () => {
   const onKeyPress = (e) => {
     if (e.key === "Enter") {
       setmembers((prev) => {
-        const newMembers = [...prev, member]
-        const jsonMembers = JSON.stringify(newMembers)
-        localStorage.setItem('name', jsonMembers)
-        return newMembers
-      })
+        const newMembers = [...prev, member];
+        const jsonMembers = JSON.stringify(newMembers);
+        localStorage.setItem("name", jsonMembers);
+        return newMembers;
+      });
       setMember("");
       inputFocus.current.focus();
     }
   };
 
   const deleteLocal = () => {
-    localStorage.removeItem('name')
-    setmembers([])
-  }
+    localStorage.removeItem("name");
+    setmembers([]);
+  };
 
   const dragStart = (e) => {
     const value = e.target.getAttribute("value");
     setMemberSort(value);
-    setMember("");
   };
 
   const dragOver = (e) => {
@@ -82,8 +76,6 @@ const Division = () => {
     setHandleteam2([]);
     await sleep(2000);
     main();
-    localStorage.setItem('team1', JSON.stringify(handleTeam1))
-    localStorage.setItem('team2', JSON.stringify(handleTeam2))
   };
 
   const team = (index) => {
@@ -131,37 +123,74 @@ const Division = () => {
               onKeyDown={onKeyPress}
               placeholder="Nhập thành viên..."
             />
-            <button type="button" className="btn btn-primary ml-1" onClick={AddUser} onKeyDown={onKeyPress}>
+            <button
+              type="button"
+              className="btn btn-primary ml-1"
+              onClick={AddUser}
+              onKeyDown={onKeyPress}
+            >
               Thêm
             </button>
           </div>
-          
-          <table className="table table-bordered text-center mt-3 table-input">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Thành viên</th>
-              </tr>
-            </thead>
-            <tbody>
-              {members.map((member, index) => (
-                <tr key={index}>
-                  <td>{index}</td>
-                  <td
-                    ref={inputMember}
-                    draggable="true"
-                    className="member-drag"
-                    onDragStart={dragStart}
-                    value={member}
-                  >
-                    {member}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <button type="button" className="btn btn-primary" onClick={deleteLocal}>
-          Xóa
+          <div className="mt-2">
+            <div className="wrap-tb">
+              <div className="col tb-1">
+                <div className="row hight-row">
+                  <div className="col-4 colBd">#</div>
+                  <div className="col-8 colBd">Thành viên</div>
+                </div>
+                {members.map((member, index) => {
+                  if (index % 2 == 0) {
+                    return (
+                      <div className="row hight-row" key={index}>
+                        <div className="col-4 colBd">{index}</div>
+                        <div
+                          ref={inputMember}
+                          draggable="true"
+                          className="member-drag col-8 colBd"
+                          onDragStart={dragStart}
+                          value={member}
+                        >
+                          {member}
+                        </div>
+                      </div>
+                    );
+                  }
+                })}
+              </div>
+              <div className="col tb-2">
+                <div className="row hight-row">
+                  <div className="col-4 colBd">#</div>
+                  <div className="col-8 colBd">Thành viên</div>
+                </div>
+                {members.map((member, index) => {
+                  if (index % 2 !== 0) {
+                    return (
+                      <div className="row hight-row" key={index}>
+                        <div className="col-4 colBd">{index}</div>
+                        <div
+                          ref={inputMember}
+                          draggable="true"
+                          className="member-drag col-8 colBd"
+                          onDragStart={dragStart}
+                          value={member}
+                        >
+                          {member}
+                        </div>
+                      </div>
+                    );
+                  }
+                })}
+              </div>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            className="btn btn-primary mt-3"
+            onClick={deleteLocal}
+          >
+            Xóa
           </button>
         </div>
         <div className="member-drag text-center">
@@ -271,4 +300,4 @@ const Division = () => {
   );
 };
 
-export default Division;
+export default TeamDivision;

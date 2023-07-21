@@ -22,22 +22,22 @@ const Footer = () => {
               <h6 className="text-uppercase fw-bold mb-4">Products</h6>
               <p>
                 <a href="#!" className="text-reset">
-                  Angular
+                  HTML
                 </a>
               </p>
               <p>
                 <a href="#!" className="text-reset">
-                  React
+                  CSS
                 </a>
               </p>
               <p>
                 <a href="#!" className="text-reset">
-                  Vue
+                  React JS
                 </a>
               </p>
               <p>
                 <a href="#!" className="text-reset">
-                  Laravel
+                  Node JS
                 </a>
               </p>
             </div>

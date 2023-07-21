@@ -1,13 +1,13 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./Header.css"
-// import logo from "../Image"
 
 const Header = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark primary-color header">
-      <a className="navbar-brand" href="#">
+      <Link className="navbar-brand" to="#">
         {/* <img src={logo} alt="logo" className="logo" /> */}
-      </a>
+      </Link>
       <button
         className="navbar-toggler"
         type="button"
@@ -22,26 +22,17 @@ const Header = () => {
       <div className="collapse navbar-collapse" id="navbarNav">
         <ul className="navbar-nav">
           <li className="nav-item active">
-            <a className="nav-link" href="#">
+            <Link className="nav-link" to="/">
               Home 
               <span className="sr-only">(current)</span>
-            </a>
+            </Link>
           </li>
           <li className="nav-item">
-            <a className="nav-link" href="#">
-              Features
-            </a>
+            <Link className="nav-link" to="/history">
+              History
+            </Link>
           </li>
-          <li className="nav-item">
-            <a className="nav-link" href="#">
-              Pricing
-            </a>
-          </li>
-          <li className="nav-item">
-            <a className="nav-link" href="#">
-              Disabled
-            </a>
-          </li>
+          
         </ul>
       </div>
     </nav>
