@@ -1,54 +1,96 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import axios from "axios";
 import "./style.css";
 
 const TeamDivision = () => {
   const [team1, setTeam1] = useState([]);
   const [team2, setTeam2] = useState([]);
 
+  const [isProcessing, setIsProcessing] = useState(null);
+
   const [handleTeam1, setHandleteam1] = useState([]);
   const [handleTeam2, setHandleteam2] = useState([]);
 
+  const [memberSort, setMemberSort] = useState("");
+
   const [member, setMember] = useState("");
-  const [members, setmembers] = useState(() => {
-    const storageMember = JSON.parse(localStorage.getItem("name"));
-    return storageMember ?? [];
-  });
-  // const [editing, setEditing] = useState(false)
   const inputFocus = useRef();
   const inputMember = useRef();
-  const genName = useRef();
+
+  const [members, setMembers] = useState([]);
+
+  // const [members, setMembers] = useState(() => {
+  //   const storageMember = JSON.parse(localStorage.getItem("name"));
+  //   return storageMember ?? [];
+  // });
+
+  // axios
+  //   .get("/user?ID=12345")
+  //   .then(function (response) {
+  //     // handle success
+  //     console.log(response);
+  //   })
+  //   .catch(function (error) {
+  //     // handle error
+  //     console.log(error);
+  //   })
+  //   .finally(function () {
+  //     // always executed
+  //   });
 
   const maxLength = team1.length > team2.length ? team1.length : team2.length;
 
-  const [memberSort, setMemberSort] = useState("");
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/soccer")
+      .then((res) => {
+        console.log(res.data);
+        setMembers(res.data);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
-  const AddUser = () => {
-    setmembers((prev) => {
-      const newMembers = [...prev, member];
-      const jsonMembers = JSON.stringify(newMembers);
-      localStorage.setItem("name", jsonMembers);
-      return newMembers;
-    });
-    setMember("");
-    inputFocus.current.focus();
-  };
+  const AddMember = () => {
+    // axios
+    //   .post("http://localhost:5000/api/soccer", { member })
+    //   .then((res) => {
+    //     console.log('Yêu cầu POST thành công: ', res.data);
+    //   })
+    //   .catch((err) => console.log(err));
 
-  const onKeyPress = (e) => {
-    if (e.key === "Enter") {
-      setmembers((prev) => {
-        const newMembers = [...prev, member];
-        const jsonMembers = JSON.stringify(newMembers);
-        localStorage.setItem("name", jsonMembers);
-        return newMembers;
+    // setMember("");
+    // inputFocus.current.focus();
+    axios
+      .post("http://localhost:5000/api/soccer", { member })
+      .then((response) => {
+        // Xử lý kết quả nếu cần thiết
+        console.log("Yêu cầu POST thành công:", response.data);
+
+        // Sau khi thêm người dùng thành công, gửi câu truy vấn GET để lấy danh sách người dùng từ server
+        axios
+          .get("http://localhost:5000/api/soccer")
+          .then((response) => {
+            // Xử lý kết quả nếu cần thiết
+            console.log("Yêu cầu GET thành công:", response.data);
+          })
+          .catch((error) => {
+            // Xử lý lỗi GET nếu có
+            console.error("Lỗi khi gửi yêu cầu GET:", error);
+          });
+      })
+      .catch((error) => {
+        // Xử lý lỗi POST nếu có
+        console.error("Lỗi khi gửi yêu cầu POST:", error);
       });
-      setMember("");
-      inputFocus.current.focus();
-    }
   };
 
-  const deleteLocal = () => {
-    localStorage.removeItem("name");
-    setmembers([]);
+  const deleteMember = () => {
+    axios
+      .delete("http://localhost:5000/api/soccer")
+      .then((res) => {
+        console.log("Yêu cầu DELETE thành công: ", res.data);
+      })
+      .catch((err) => console.log("Lỗi khi gửi yêu cầu DELETE: ", err));
   };
 
   const dragStart = (e) => {
@@ -74,6 +116,7 @@ const TeamDivision = () => {
   const init = async () => {
     setHandleteam1([]);
     setHandleteam2([]);
+    setIsProcessing(false);
     await sleep(2000);
     main();
   };
@@ -102,13 +145,59 @@ const TeamDivision = () => {
 
   const main = async () => {
     for (let i = 0; i < maxLength; i++) {
-      setTimeout(() => genTBody(i), i * 1500);
+      setTimeout(() => genTBody(i, i === maxLength - 1), i * 1500);
     }
   };
 
-  const genTBody = (index) => {
+  const genTBody = (index, isEnd) => {
     team(index);
+    if (isEnd) {
+      setIsProcessing(true);
+    }
   };
+
+  // const getData = async () => {
+  //   let data = await fetch("http://localhost:5000");
+  //   let jsonData = await data.json();
+  //   return jsonData;
+  // };
+
+  // const saveData = async () => {
+  //   let postBody = {
+  //     inputName: members,
+  //     team1: handleTeam1,
+  //     team2: handleTeam2,
+  //   };
+  //   let data = await fetch("http://localhost:5000/add", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(postBody),
+  //   });
+  //   console.log(data)
+  //   console.log(postBody)
+
+  // };
+
+  // const test = () => {
+  //   getData().then((data) => {
+  //     setMessage(data.message);
+  //   });
+  // };
+
+  // const [message, setMessage] = useState("");
+
+  // useEffect(() => {
+  //   test();
+  // },[]);
+
+  // useEffect(() => {
+  //   if (isProcessing == null || isProcessing == false) {
+  //     return;
+  //   }
+  //   saveData();
+  // },[isProcessing]);
 
   return (
     <div className="fuild-container app">
@@ -118,20 +207,18 @@ const TeamDivision = () => {
           <div className="ip-wrap">
             <input
               ref={inputFocus}
-              value={member}
               onChange={(e) => setMember(e.target.value)}
-              onKeyDown={onKeyPress}
               placeholder="Nhập thành viên..."
             />
             <button
               type="button"
               className="btn btn-primary ml-1"
-              onClick={AddUser}
-              onKeyDown={onKeyPress}
+              onClick={AddMember}
             >
               Thêm
             </button>
           </div>
+
           <div className="mt-2">
             <div className="wrap-tb">
               <div className="col tb-1">
@@ -139,6 +226,7 @@ const TeamDivision = () => {
                   <div className="col-4 colBd">#</div>
                   <div className="col-8 colBd">Thành viên</div>
                 </div>
+
                 {members.map((member, index) => {
                   if (index % 2 == 0) {
                     return (
@@ -149,15 +237,16 @@ const TeamDivision = () => {
                           draggable="true"
                           className="member-drag col-8 colBd"
                           onDragStart={dragStart}
-                          value={member}
+                          value={member.name}
                         >
-                          {member}
+                          {member.name}
                         </div>
                       </div>
                     );
                   }
                 })}
               </div>
+
               <div className="col tb-2">
                 <div className="row hight-row">
                   <div className="col-4 colBd">#</div>
@@ -173,9 +262,9 @@ const TeamDivision = () => {
                           draggable="true"
                           className="member-drag col-8 colBd"
                           onDragStart={dragStart}
-                          value={member}
+                          value={member.name}
                         >
-                          {member}
+                          {member.name}
                         </div>
                       </div>
                     );
@@ -188,11 +277,12 @@ const TeamDivision = () => {
           <button
             type="button"
             className="btn btn-primary mt-3"
-            onClick={deleteLocal}
+            onClick={deleteMember}
           >
             Xóa
           </button>
         </div>
+
         <div className="member-drag text-center">
           <h3 style={{ marginTop: 6 }}>Chọn thành viên</h3>
           <table className="table table-bordered text-center mt-5 table-handle">
