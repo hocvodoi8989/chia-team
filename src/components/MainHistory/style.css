@@ -5,6 +5,7 @@
 
 .month {
     font-size: 24px;
+    margin-right: 10px;
 }
 
 td {
@@ -17,4 +18,10 @@ body {
 
 .wrapper {
     padding: 30px 50px;
+}
+
+.add-btn {
+    font-size: 12px;
+    width: 60px;
+    height: 30px;
 }

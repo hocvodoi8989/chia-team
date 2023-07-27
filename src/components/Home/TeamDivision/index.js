@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
+import Loading from "../Loading/Loading";
+import Modal from "../Modal/Modal"
 import "./style.css";
 
 const TeamDivision = () => {
@@ -7,6 +9,8 @@ const TeamDivision = () => {
   const [team2, setTeam2] = useState([]);
 
   const [isProcessing, setIsProcessing] = useState(null);
+  const inputFocus = useRef();
+  const inputMember = useRef();
 
   const [handleTeam1, setHandleteam1] = useState([]);
   const [handleTeam2, setHandleteam2] = useState([]);
@@ -14,29 +18,14 @@ const TeamDivision = () => {
   const [memberSort, setMemberSort] = useState("");
 
   const [member, setMember] = useState("");
-  const inputFocus = useRef();
-  const inputMember = useRef();
 
   const [members, setMembers] = useState([]);
 
-  // const [members, setMembers] = useState(() => {
-  //   const storageMember = JSON.parse(localStorage.getItem("name"));
-  //   return storageMember ?? [];
-  // });
+  const [checkAddMember, setCheckAddMember] = useState(0);
 
-  // axios
-  //   .get("/user?ID=12345")
-  //   .then(function (response) {
-  //     // handle success
-  //     console.log(response);
-  //   })
-  //   .catch(function (error) {
-  //     // handle error
-  //     console.log(error);
-  //   })
-  //   .finally(function () {
-  //     // always executed
-  //   });
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [showModal, setShowModal] = useState(false);
 
   const maxLength = team1.length > team2.length ? team1.length : team2.length;
 
@@ -48,35 +37,25 @@ const TeamDivision = () => {
         setMembers(res.data);
       })
       .catch((err) => console.log(err));
+  }, [checkAddMember]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/soccer/new-team")
+      .then((res) => {
+        setHandleteam1(res.data.team_1);
+        setHandleteam2(res.data.team_2);
+      })
+      .catch((err) => console.log(err));
   }, []);
 
-  const AddMember = () => {
-    // axios
-    //   .post("http://localhost:5000/api/soccer", { member })
-    //   .then((res) => {
-    //     console.log('Yêu cầu POST thành công: ', res.data);
-    //   })
-    //   .catch((err) => console.log(err));
-
-    // setMember("");
-    // inputFocus.current.focus();
+  const AddMember = (e) => {
     axios
       .post("http://localhost:5000/api/soccer", { member })
       .then((response) => {
         // Xử lý kết quả nếu cần thiết
         console.log("Yêu cầu POST thành công:", response.data);
-
-        // Sau khi thêm người dùng thành công, gửi câu truy vấn GET để lấy danh sách người dùng từ server
-        axios
-          .get("http://localhost:5000/api/soccer")
-          .then((response) => {
-            // Xử lý kết quả nếu cần thiết
-            console.log("Yêu cầu GET thành công:", response.data);
-          })
-          .catch((error) => {
-            // Xử lý lỗi GET nếu có
-            console.error("Lỗi khi gửi yêu cầu GET:", error);
-          });
+        setCheckAddMember((prev) => prev + 1);
       })
       .catch((error) => {
         // Xử lý lỗi POST nếu có
@@ -84,13 +63,43 @@ const TeamDivision = () => {
       });
   };
 
+  const AddMemberOnKeyPress = (e) => {
+    if (e.key === "Enter") {
+      axios
+        .post("http://localhost:5000/api/soccer", { member })
+        .then((response) => {
+          // Xử lý kết quả nếu cần thiết
+          console.log("Yêu cầu POST thành công:", response.data);
+          setCheckAddMember((prev) => prev + 1);
+        })
+        .catch((error) => {
+          // Xử lý lỗi POST nếu có
+          console.error("Lỗi khi gửi yêu cầu POST:", error);
+        });
+    }
+  };
+
   const deleteMember = () => {
     axios
       .delete("http://localhost:5000/api/soccer")
       .then((res) => {
         console.log("Yêu cầu DELETE thành công: ", res.data);
+        setCheckAddMember((prev) => prev + 1);
       })
       .catch((err) => console.log("Lỗi khi gửi yêu cầu DELETE: ", err));
+  };
+
+  const deleteMemberNewTeam = () => {
+    axios
+      .delete("http://localhost:5000/api/soccer/new-team")
+      .then((res) => {
+        console.log("Yêu cầu DELETE thành công: ", res.data);
+        setCheckAddMember((prev) => prev + 1);
+      })
+      .catch((err) => console.log("Lỗi khi gửi yêu cầu DELETE: ", err));
+
+    setHandleteam1([]);
+    setHandleteam2([]);
   };
 
   const dragStart = (e) => {
@@ -111,14 +120,22 @@ const TeamDivision = () => {
     } else {
       setTeam1((prev) => [...prev, memberSort]);
     }
+
+    setMember();
   };
 
   const init = async () => {
     setHandleteam1([]);
     setHandleteam2([]);
     setIsProcessing(false);
-    await sleep(2000);
-    main();
+    try {
+      setIsLoading(true);
+      await sleep(2000);
+      main();
+    } catch (error) {
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const team = (index) => {
@@ -156,48 +173,37 @@ const TeamDivision = () => {
     }
   };
 
-  // const getData = async () => {
-  //   let data = await fetch("http://localhost:5000");
-  //   let jsonData = await data.json();
-  //   return jsonData;
-  // };
+  useEffect(() => {
+    if (isProcessing == null || isProcessing == false) {
+      return;
+    }
+    axios
+      .post("http://localhost:5000/api/soccer/new-team", {
+        handleTeam1,
+        handleTeam2,
+      })
+      .then((response) => {
+        // Xử lý kết quả nếu cần thiết
+        console.log("Yêu cầu POST thành công:", response.data);
+        setCheckAddMember((prev) => prev + 1);
+      })
+      .catch((error) => {
+        // Xử lý lỗi POST nếu có
+        console.error("Lỗi khi gửi yêu cầu POST:", error);
+      });
+  }, [isProcessing]);
 
-  // const saveData = async () => {
-  //   let postBody = {
-  //     inputName: members,
-  //     team1: handleTeam1,
-  //     team2: handleTeam2,
-  //   };
-  //   let data = await fetch("http://localhost:5000/add", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(postBody),
-  //   });
-  //   console.log(data)
-  //   console.log(postBody)
+  const handleConfirm = () => {
+    setShowModal(false);
+  };
 
-  // };
+  const handleCancel = () => {
+    setShowModal(false);
+  };
 
-  // const test = () => {
-  //   getData().then((data) => {
-  //     setMessage(data.message);
-  //   });
-  // };
-
-  // const [message, setMessage] = useState("");
-
-  // useEffect(() => {
-  //   test();
-  // },[]);
-
-  // useEffect(() => {
-  //   if (isProcessing == null || isProcessing == false) {
-  //     return;
-  //   }
-  //   saveData();
-  // },[isProcessing]);
+  const handleDelete = () => {
+    setShowModal(true);
+  };
 
   return (
     <div className="fuild-container app">
@@ -209,6 +215,7 @@ const TeamDivision = () => {
               ref={inputFocus}
               onChange={(e) => setMember(e.target.value)}
               placeholder="Nhập thành viên..."
+              onKeyDown={AddMemberOnKeyPress}
             />
             <button
               type="button"
@@ -219,7 +226,7 @@ const TeamDivision = () => {
             </button>
           </div>
 
-          <div className="mt-2">
+          <div className="mt-3">
             <div className="wrap-tb">
               <div className="col tb-1">
                 <div className="row hight-row">
@@ -277,14 +284,21 @@ const TeamDivision = () => {
           <button
             type="button"
             className="btn btn-primary mt-3"
-            onClick={deleteMember}
+            onClick={handleDelete}
           >
             Xóa
           </button>
         </div>
-
+        {showModal && (
+          <Modal
+            message="Bạn có chắc chắn muốn xóa tất cả không?"
+            onConfirm={handleConfirm}
+            onCancel={handleCancel}
+            deleteMember={deleteMember}
+          />
+        )}
         <div className="member-drag text-center">
-          <h3 style={{ marginTop: 6 }}>Chọn thành viên</h3>
+          <h3 style={{ marginTop: 6, marginBottom: 56 }}>Chọn thành viên</h3>
           <table className="table table-bordered text-center mt-5 table-handle">
             <thead>
               <tr>
@@ -351,6 +365,7 @@ const TeamDivision = () => {
         <button type="button" className="btn btn-primary" onClick={init}>
           Chia
         </button>
+        {isLoading ? <Loading /> : null}
         <div className="total-table">
           <table className="table table-bordered text-center mt-5 table-output">
             <thead>
@@ -385,9 +400,17 @@ const TeamDivision = () => {
             </tbody>
           </table>
         </div>
+
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={deleteMemberNewTeam}
+        >
+          Xóa
+        </button>
       </div>
     </div>
   );
 };
 
-export default TeamDivision;
+export default TeamDivision 

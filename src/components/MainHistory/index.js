@@ -1,7 +1,22 @@
+import { useEffect } from "react";
+import axios from "axios";
 import Header from "../Home/Header";
 import "./style.css";
 
 const History = () => {
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/soccer/new-team")
+      .then((res) => {
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  const AddToMonth = () => {
+    
+  };
+
   return (
     <>
       <Header />
@@ -95,7 +110,16 @@ const History = () => {
                   </tr>
                 </tbody>
               </table>
-              <h2 className="month">Tháng 7</h2>
+              <div className="d-flex justify-content-center">
+                <h2 className="month">Tháng 7</h2>
+                <button
+                  type="button"
+                  className="btn btn-primary ml-1 add-btn"
+                  // onClick={AddMonth}
+                >
+                  Thêm
+                </button>
+              </div>
             </div>
             <div className="col">
               <table className="table table-striped">
@@ -139,7 +163,16 @@ const History = () => {
                   </tr>
                 </tbody>
               </table>
-              <h2 className="month">Tháng 8</h2>
+              <div className="d-flex justify-content-center">
+                <h2 className="month">Tháng 8</h2>
+                <button
+                  type="button"
+                  className="btn btn-primary ml-1 add-btn"
+                  // onClick={AddMonth}
+                >
+                  Thêm
+                </button>
+              </div>
             </div>
 
             <div className="w-100"></div>
@@ -185,7 +218,16 @@ const History = () => {
                   </tr>
                 </tbody>
               </table>
-              <h2 className="month">Tháng 9</h2>
+              <div className="d-flex justify-content-center">
+                <h2 className="month">Tháng 9</h2>
+                <button
+                  type="button"
+                  className="btn btn-primary ml-1 add-btn"
+                  // onClick={AddMonth}
+                >
+                  Thêm
+                </button>
+              </div>
             </div>
             <div className="col">
               <table className="table table-striped">
@@ -229,7 +271,16 @@ const History = () => {
                   </tr>
                 </tbody>
               </table>
-              <h2 className="month">Tháng 10</h2>
+              <div className="d-flex justify-content-center">
+                <h2 className="month">Tháng 10</h2>
+                <button
+                  type="button"
+                  className="btn btn-primary ml-1 add-btn"
+                  // onClick={AddMonth}
+                >
+                  Thêm
+                </button>
+              </div>
             </div>
             <div className="col">
               <table className="table table-striped">
@@ -273,7 +324,16 @@ const History = () => {
                   </tr>
                 </tbody>
               </table>
-              <h2 className="month">Tháng 11</h2>
+              <div className="d-flex justify-content-center">
+                <h2 className="month">Tháng 11</h2>
+                <button
+                  type="button"
+                  className="btn btn-primary ml-1 add-btn"
+                  // onClick={AddMonth}
+                >
+                  Thêm
+                </button>
+              </div>
             </div>
           </div>
         </div>
