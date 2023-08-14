@@ -29,7 +29,7 @@
 
 .member-drag {
     width: 600px;
-} 
+}
 
 .member-drag:hover {
     cursor: pointer;
@@ -40,10 +40,6 @@
     justify-content: center;
 }
 
-.table-output {
-    width: 300px;
-}
-
 .total-table {
     display: flex;
     justify-content: center;
@@ -51,6 +47,7 @@
 
 .colBd {
     border: 1px solid #fff;
+    flex: 1;
 }
 
 .wrap-tb {
@@ -65,4 +62,35 @@
 
 .hide {
     display: none;
+}
+
+/* CustomTable.css */
+.borderless-table {
+    width: 300px;
+    border-collapse: collapse;
+}
+
+.borderless-table th,
+.borderless-table td {
+    border: none;
+    padding: 10px;
+    text-align: center;
+}
+
+.borderless-table th {
+    background-color: #f2f2f2;
+}
+
+.borderless-table tr:hover td {
+    color: #ff5733;
+}
+
+.borderless-table th:first-child,
+.borderless-table td:first-child {
+    border-left: none;
+}
+
+.borderless-table th:last-child,
+.borderless-table td:last-child {
+    border-right: none;
 }

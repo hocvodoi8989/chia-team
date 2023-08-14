@@ -1,7 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
+// import { FontAwesomeIcon } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import Loading from "../Loading/Loading";
-import Modal from "../Modal/Modal"
+import Modal from "../Modal/Modal";
 import "./style.css";
 
 const TeamDivision = () => {
@@ -17,11 +20,13 @@ const TeamDivision = () => {
 
   const [memberSort, setMemberSort] = useState("");
 
+  const genData = useRef();
+
   const [member, setMember] = useState("");
 
   const [members, setMembers] = useState([]);
 
-  const [checkAddMember, setCheckAddMember] = useState(0);
+  const [checkAddMember, setCheckAddMember] = useState();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -33,7 +38,6 @@ const TeamDivision = () => {
     axios
       .get("http://localhost:5000/api/soccer")
       .then((res) => {
-        console.log(res.data);
         setMembers(res.data);
       })
       .catch((err) => console.log(err));
@@ -61,6 +65,8 @@ const TeamDivision = () => {
         // Xử lý lỗi POST nếu có
         console.error("Lỗi khi gửi yêu cầu POST:", error);
       });
+
+    setMember("");
   };
 
   const AddMemberOnKeyPress = (e) => {
@@ -68,12 +74,9 @@ const TeamDivision = () => {
       axios
         .post("http://localhost:5000/api/soccer", { member })
         .then((response) => {
-          // Xử lý kết quả nếu cần thiết
-          console.log("Yêu cầu POST thành công:", response.data);
           setCheckAddMember((prev) => prev + 1);
         })
         .catch((error) => {
-          // Xử lý lỗi POST nếu có
           console.error("Lỗi khi gửi yêu cầu POST:", error);
         });
     }
@@ -102,9 +105,31 @@ const TeamDivision = () => {
     setHandleteam2([]);
   };
 
+  useEffect(() => {
+    if (isProcessing == null || isProcessing === false) {
+      return;
+    }
+
+    axios
+      .post("http://localhost:5000/api/soccer/new-team", {
+        handleTeam1,
+        handleTeam2,
+      })
+      .then((response) => {
+        // Xử lý kết quả nếu cần thiết
+        console.log("Yêu cầu POST thành công:", response.data);
+        setCheckAddMember((prev) => prev + 1);
+      })
+      .catch((error) => {
+        // Xử lý lỗi POST nếu có
+        console.error("Lỗi khi gửi yêu cầu POST:", error);
+      });
+  }, [isProcessing]);
+
   const dragStart = (e) => {
-    const value = e.target.getAttribute("value");
-    setMemberSort(value);
+    const name = e.target.getAttribute("data-name");
+    const id = e.target.getAttribute("data-id");
+    setMemberSort(name, id);
   };
 
   const dragOver = (e) => {
@@ -120,8 +145,6 @@ const TeamDivision = () => {
     } else {
       setTeam1((prev) => [...prev, memberSort]);
     }
-
-    setMember();
   };
 
   const init = async () => {
@@ -205,6 +228,7 @@ const TeamDivision = () => {
     setShowModal(true);
   };
 
+ 
   return (
     <div className="fuild-container app">
       <div className="wrapper d-flex">
@@ -235,7 +259,7 @@ const TeamDivision = () => {
                 </div>
 
                 {members.map((member, index) => {
-                  if (index % 2 == 0) {
+                  if (index % 2 === 0) {
                     return (
                       <div className="row hight-row" key={index}>
                         <div className="col-4 colBd">{index}</div>
@@ -244,9 +268,11 @@ const TeamDivision = () => {
                           draggable="true"
                           className="member-drag col-8 colBd"
                           onDragStart={dragStart}
-                          value={member.name}
+                          data-name={member.name}
+                          data-id={member.id}
                         >
                           {member.name}
+                          {/* <FontAwesomeIcon icon={faTrash} /> */}
                         </div>
                       </div>
                     );
@@ -269,9 +295,11 @@ const TeamDivision = () => {
                           draggable="true"
                           className="member-drag col-8 colBd"
                           onDragStart={dragStart}
-                          value={member.name}
+                          data-name={member.name}
+                          data-id={member.id}
                         >
                           {member.name}
+                          {/* <FontAwesomeIcon icon={faTrash} /> */}
                         </div>
                       </div>
                     );
@@ -299,66 +327,52 @@ const TeamDivision = () => {
         )}
         <div className="member-drag text-center">
           <h3 style={{ marginTop: 6, marginBottom: 56 }}>Chọn thành viên</h3>
-          <table className="table table-bordered text-center mt-5 table-handle">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Đội 1</th>
-                <th scope="col">#</th>
-                <th scope="col">Đội 2</th>
-              </tr>
-            </thead>
-            <tbody className="table-target">
-              <tr>
-                <td>1</td>
-                <td onDragOver={dragOver} onDrop={drop}></td>
-                <td>2</td>
-                <td onDragOver={dragOver} onDrop={drop}></td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td onDragOver={dragOver} onDrop={drop}></td>
-                <td>4</td>
-                <td onDragOver={dragOver} onDrop={drop}></td>
-              </tr>
-              <tr>
-                <td>5</td>
-                <td onDragOver={dragOver} onDrop={drop}></td>
-                <td>6</td>
-                <td onDragOver={dragOver} onDrop={drop}></td>
-              </tr>
-              <tr>
-                <td>7</td>
-                <td onDragOver={dragOver} onDrop={drop}></td>
-                <td>8</td>
-                <td onDragOver={dragOver} onDrop={drop}></td>
-              </tr>
-              <tr>
-                <td>9</td>
-                <td onDragOver={dragOver} onDrop={drop}></td>
-                <td>10</td>
-                <td onDragOver={dragOver} onDrop={drop}></td>
-              </tr>
-              <tr>
-                <td>11</td>
-                <td onDragOver={dragOver} onDrop={drop}></td>
-                <td>12</td>
-                <td onDragOver={dragOver} onDrop={drop}></td>
-              </tr>
-              <tr>
-                <td>13</td>
-                <td onDragOver={dragOver} onDrop={drop}></td>
-                <td>14</td>
-                <td onDragOver={dragOver} onDrop={drop}></td>
-              </tr>
-              <tr>
-                <td>15</td>
-                <td onDragOver={dragOver} onDrop={drop}></td>
-                <td>16</td>
-                <td onDragOver={dragOver} onDrop={drop}></td>
-              </tr>
-            </tbody>
-          </table>
+          <div className="mt-3">
+            <div className="wrap-tb">
+              <div className="col tb-1">
+                <div className="row hight-row">
+                  <div className="col-4 colBd">#</div>
+                  <div className="col-8 colBd">Thành viên</div>
+                </div>
+
+                {Array.from({ length: 16 }).map((name, index) => {
+                  if (index % 2 == 0) {
+                    return (
+                      <div className="row hight-row" key={index}>
+                        <div className="col-4 colBd">{index}</div>
+                        <div
+                          onDragOver={dragOver}
+                          onDrop={drop}
+                          className="colBd"
+                        ></div>
+                      </div>
+                    );
+                  }
+                })}
+              </div>
+
+              <div className="col tb-2">
+                <div className="row hight-row">
+                  <div className="col-4 colBd">#</div>
+                  <div className="col-8 colBd">Thành viên</div>
+                </div>
+                {Array.from({ length: 16 }).map((name, index) => {
+                  if (index % 2 !== 0) {
+                    return (
+                      <div className="row hight-row" key={index}>
+                        <div className="col-4 colBd">{index}</div>
+                        <div
+                          onDragOver={dragOver}
+                          onDrop={drop}
+                          className="colBd"
+                        ></div>
+                      </div>
+                    );
+                  }
+                })}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div className="member-handle text-center">
@@ -367,36 +381,40 @@ const TeamDivision = () => {
         </button>
         {isLoading ? <Loading /> : null}
         <div className="total-table">
-          <table className="table table-bordered text-center mt-5 table-output">
+          <table className="table table-bordered text-center mt-5 borderless-table">
             <thead>
-              <tr>
+              <tr style={{ color: "#343a40" }}>
                 <th scope="col">#</th>
                 <th scope="col">Đội 1</th>
               </tr>
             </thead>
             <tbody>
-              {handleTeam1.map((handle1, index) => (
-                <tr key={index}>
-                  <td>{index}</td>
-                  <td>{handle1}</td>
-                </tr>
-              ))}
+              {handleTeam1.map((handle1, index) => {
+                return (
+                  <tr key={index}>
+                    <td>{index}</td>
+                    <td ref={genData}>{handle1}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
-          <table className="table table-bordered text-center mt-5 ml-5 table-output">
+          <table className="table table-bordered text-center mt-5 ml-5 borderless-table">
             <thead>
-              <tr>
+              <tr style={{ color: "#343a40" }}>
                 <th scope="col">#</th>
                 <th scope="col">Đội 2</th>
               </tr>
             </thead>
             <tbody>
-              {handleTeam2.map((handle2, index) => (
-                <tr key={index}>
-                  <td>{index}</td>
-                  <td>{handle2}</td>
-                </tr>
-              ))}
+              {handleTeam2.map((handle2, index) => {
+                return (
+                  <tr key={index}>
+                    <td>{index}</td>
+                    <td ref={genData}>{handle2}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -413,4 +431,4 @@ const TeamDivision = () => {
   );
 };
 
-export default TeamDivision 
+export default TeamDivision;
