@@ -64,6 +64,10 @@
     display: none;
 }
 
+.red-color {
+    color: red;
+}
+
 /* CustomTable.css */
 .borderless-table {
     width: 300px;

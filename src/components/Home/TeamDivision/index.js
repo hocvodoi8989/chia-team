@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-// import { FontAwesomeIcon } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import clsx from "clsx";
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+// import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import Loading from "../Loading/Loading";
 import Modal from "../Modal/Modal";
 import "./style.css";
@@ -18,6 +18,8 @@ const TeamDivision = () => {
   const [handleTeam1, setHandleteam1] = useState([]);
   const [handleTeam2, setHandleteam2] = useState([]);
 
+  const [tempList, setTempList] = useState(Array.from({ length: 16 }))
+
   const [memberSort, setMemberSort] = useState("");
 
   const genData = useRef();
@@ -26,7 +28,9 @@ const TeamDivision = () => {
 
   const [members, setMembers] = useState([]);
 
-  const [checkAddMember, setCheckAddMember] = useState();
+  const [checkAddMember, setCheckAddMember] = useState(0);
+
+  const [isDragging, setIsDragging] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -57,16 +61,15 @@ const TeamDivision = () => {
     axios
       .post("http://localhost:5000/api/soccer", { member })
       .then((response) => {
-        // Xử lý kết quả nếu cần thiết
         console.log("Yêu cầu POST thành công:", response.data);
         setCheckAddMember((prev) => prev + 1);
       })
       .catch((error) => {
-        // Xử lý lỗi POST nếu có
         console.error("Lỗi khi gửi yêu cầu POST:", error);
       });
 
     setMember("");
+    inputFocus.current.focus();
   };
 
   const AddMemberOnKeyPress = (e) => {
@@ -79,7 +82,11 @@ const TeamDivision = () => {
         .catch((error) => {
           console.error("Lỗi khi gửi yêu cầu POST:", error);
         });
+
+        setMember("");
+        inputFocus.current.focus();
     }
+
   };
 
   const deleteMember = () => {
@@ -116,12 +123,9 @@ const TeamDivision = () => {
         handleTeam2,
       })
       .then((response) => {
-        // Xử lý kết quả nếu cần thiết
-        console.log("Yêu cầu POST thành công:", response.data);
         setCheckAddMember((prev) => prev + 1);
       })
       .catch((error) => {
-        // Xử lý lỗi POST nếu có
         console.error("Lỗi khi gửi yêu cầu POST:", error);
       });
   }, [isProcessing]);
@@ -130,6 +134,11 @@ const TeamDivision = () => {
     const name = e.target.getAttribute("data-name");
     const id = e.target.getAttribute("data-id");
     setMemberSort(name, id);
+    setIsDragging(false);
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(true);
   };
 
   const dragOver = (e) => {
@@ -145,6 +154,7 @@ const TeamDivision = () => {
     } else {
       setTeam1((prev) => [...prev, memberSort]);
     }
+    
   };
 
   const init = async () => {
@@ -197,7 +207,7 @@ const TeamDivision = () => {
   };
 
   useEffect(() => {
-    if (isProcessing == null || isProcessing == false) {
+    if (isProcessing == null || isProcessing === false) {
       return;
     }
     axios
@@ -206,12 +216,9 @@ const TeamDivision = () => {
         handleTeam2,
       })
       .then((response) => {
-        // Xử lý kết quả nếu cần thiết
-        console.log("Yêu cầu POST thành công:", response.data);
         setCheckAddMember((prev) => prev + 1);
       })
       .catch((error) => {
-        // Xử lý lỗi POST nếu có
         console.error("Lỗi khi gửi yêu cầu POST:", error);
       });
   }, [isProcessing]);
@@ -228,7 +235,8 @@ const TeamDivision = () => {
     setShowModal(true);
   };
 
- 
+  
+
   return (
     <div className="fuild-container app">
       <div className="wrapper d-flex">
@@ -237,9 +245,13 @@ const TeamDivision = () => {
           <div className="ip-wrap">
             <input
               ref={inputFocus}
-              onChange={(e) => setMember(e.target.value)}
+              onChange={(e) => {
+                setMember(e.target.value);
+                console.log(e.target.value);
+              }}
               placeholder="Nhập thành viên..."
-              onKeyDown={AddMemberOnKeyPress}
+              value={member}
+              onKeyPress={AddMemberOnKeyPress}
             />
             <button
               type="button"
@@ -266,13 +278,14 @@ const TeamDivision = () => {
                         <div
                           ref={inputMember}
                           draggable="true"
-                          className="member-drag col-8 colBd"
+                          className={`member-drag col-8 colBd ${isDragging ? 'red-color' : ''}`}
+                          // className="member-drag col-8 colBd"
                           onDragStart={dragStart}
+                          onDragEnd={handleDragEnd}
                           data-name={member.name}
                           data-id={member.id}
                         >
                           {member.name}
-                          {/* <FontAwesomeIcon icon={faTrash} /> */}
                         </div>
                       </div>
                     );
@@ -299,7 +312,6 @@ const TeamDivision = () => {
                           data-id={member.id}
                         >
                           {member.name}
-                          {/* <FontAwesomeIcon icon={faTrash} /> */}
                         </div>
                       </div>
                     );
@@ -335,8 +347,8 @@ const TeamDivision = () => {
                   <div className="col-8 colBd">Thành viên</div>
                 </div>
 
-                {Array.from({ length: 16 }).map((name, index) => {
-                  if (index % 2 == 0) {
+                {tempList.map((name, index) => {
+                  if (index % 2 === 0) {
                     return (
                       <div className="row hight-row" key={index}>
                         <div className="col-4 colBd">{index}</div>
@@ -356,7 +368,7 @@ const TeamDivision = () => {
                   <div className="col-4 colBd">#</div>
                   <div className="col-8 colBd">Thành viên</div>
                 </div>
-                {Array.from({ length: 16 }).map((name, index) => {
+                {tempList.map((name, index) => {
                   if (index % 2 !== 0) {
                     return (
                       <div className="row hight-row" key={index}>
