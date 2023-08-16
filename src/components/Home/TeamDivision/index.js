@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import clsx from "clsx";
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-// import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import Loading from "../Loading/Loading";
 import Modal from "../Modal/Modal";
 import "./style.css";
@@ -12,17 +11,20 @@ const TeamDivision = () => {
   const [team2, setTeam2] = useState([]);
 
   const [isProcessing, setIsProcessing] = useState(null);
+
   const inputFocus = useRef();
+
+  const genData = useRef();
+
   const inputMember = useRef();
 
   const [handleTeam1, setHandleteam1] = useState([]);
+
   const [handleTeam2, setHandleteam2] = useState([]);
 
-  const [tempList, setTempList] = useState(Array.from({ length: 16 }))
+  const [tempList, setTempList] = useState(Array.from({ length: 16 }));
 
   const [memberSort, setMemberSort] = useState("");
-
-  const genData = useRef();
 
   const [member, setMember] = useState("");
 
@@ -83,10 +85,9 @@ const TeamDivision = () => {
           console.error("Lỗi khi gửi yêu cầu POST:", error);
         });
 
-        setMember("");
-        inputFocus.current.focus();
+      setMember("");
+      inputFocus.current.focus();
     }
-
   };
 
   const deleteMember = () => {
@@ -131,30 +132,34 @@ const TeamDivision = () => {
   }, [isProcessing]);
 
   const dragStart = (e) => {
+    console.log("dragStart", e)
     const name = e.target.getAttribute("data-name");
     const id = e.target.getAttribute("data-id");
     setMemberSort(name, id);
-    setIsDragging(false);
+
+    // setIsDragging(false);
   };
 
-  const handleDragEnd = () => {
-    setIsDragging(true);
+  const handleDragEnd = (e) => {
+    // setIsDragging(true);
   };
 
   const dragOver = (e) => {
     e.preventDefault();
+    setIsDragging(true);
   };
 
   const drop = (e) => {
+    console.log("drop", e)
+
     e.preventDefault();
     e.target.append(memberSort);
     const stt = e.target.previousElementSibling.textContent;
     if (stt % 2 === 0) {
-      setTeam2((prev) => [...prev, memberSort]);
-    } else {
       setTeam1((prev) => [...prev, memberSort]);
+    } else {
+      setTeam2((prev) => [...prev, memberSort]);
     }
-    
   };
 
   const init = async () => {
@@ -235,7 +240,14 @@ const TeamDivision = () => {
     setShowModal(true);
   };
 
-  
+  const deleteOneMember = (id) => {
+    axios
+      .delete(`http://localhost:5000/api/soccer/members/${id}`)
+      .then((res) => {
+        setCheckAddMember((prev) => prev + 1);
+      })
+      .catch((err) => console.log("Lỗi khi gửi yêu cầu DELETE: ", err));
+  };
 
   return (
     <div className="fuild-container app">
@@ -247,7 +259,6 @@ const TeamDivision = () => {
               ref={inputFocus}
               onChange={(e) => {
                 setMember(e.target.value);
-                console.log(e.target.value);
               }}
               placeholder="Nhập thành viên..."
               value={member}
@@ -278,14 +289,24 @@ const TeamDivision = () => {
                         <div
                           ref={inputMember}
                           draggable="true"
-                          className={`member-drag col-8 colBd ${isDragging ? 'red-color' : ''}`}
-                          // className="member-drag col-8 colBd"
+                          // className={`member-drag col-8 colBd ${isDragging ? 'red-color' : ''}`}
+                          className="member-drag col-8 colBd"
                           onDragStart={dragStart}
                           onDragEnd={handleDragEnd}
                           data-name={member.name}
                           data-id={member.id}
                         >
                           {member.name}
+                          <span
+                            className={`icon-delete ${
+                              isDragging ? "hide" : ""
+                            }`}
+                          >
+                            <FontAwesomeIcon
+                              icon={faTrashCan}
+                              onClick={() => deleteOneMember(member.id)}
+                            />
+                          </span>
                         </div>
                       </div>
                     );
@@ -308,10 +329,21 @@ const TeamDivision = () => {
                           draggable="true"
                           className="member-drag col-8 colBd"
                           onDragStart={dragStart}
+                          onDragEnd={handleDragEnd}
                           data-name={member.name}
                           data-id={member.id}
                         >
-                          {member.name}
+                          <span>{member.name}</span>
+                          <span
+                            className={`icon-delete ${
+                              isDragging ? "hide" : ""
+                            }`}
+                          >
+                            <FontAwesomeIcon
+                              icon={faTrashCan}
+                              onClick={() => deleteOneMember(member.id)}
+                            />
+                          </span>
                         </div>
                       </div>
                     );
