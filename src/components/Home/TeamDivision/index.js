@@ -16,6 +16,8 @@ const TeamDivision = () => {
 
   const genData = useRef();
 
+  const selectItemRef = useRef();
+
   const inputMember = useRef();
 
   const [handleTeam1, setHandleteam1] = useState([]);
@@ -32,7 +34,7 @@ const TeamDivision = () => {
 
   const [checkAddMember, setCheckAddMember] = useState(0);
 
-  const [isDragging, setIsDragging] = useState(false);
+  const [checkDraged, setCheckDraged] = useState("")
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -132,28 +134,31 @@ const TeamDivision = () => {
   }, [isProcessing]);
 
   const dragStart = (e) => {
-    console.log("dragStart", e)
+    const item = e.target.innerText
     const name = e.target.getAttribute("data-name");
     const id = e.target.getAttribute("data-id");
     setMemberSort(name, id);
-
-    // setIsDragging(false);
   };
 
   const handleDragEnd = (e) => {
-    // setIsDragging(true);
+    const item = e.target.innerText
+    setCheckDraged(item)
   };
-
+  
   const dragOver = (e) => {
     e.preventDefault();
-    setIsDragging(true);
   };
 
   const drop = (e) => {
-    console.log("drop", e)
-
     e.preventDefault();
-    e.target.append(memberSort);
+    const itemDrop = e.target.innerText
+    if (itemDrop !== "") {
+      e.target.append(" + " + memberSort);
+
+    } else {
+      e.target.append(memberSort);
+    }
+
     const stt = e.target.previousElementSibling.textContent;
     if (stt % 2 === 0) {
       setTeam1((prev) => [...prev, memberSort]);
@@ -161,6 +166,10 @@ const TeamDivision = () => {
       setTeam2((prev) => [...prev, memberSort]);
     }
   };
+  
+  // console.log(team1)
+  // console.log(team2)
+
 
   const init = async () => {
     setHandleteam1([]);
@@ -176,9 +185,21 @@ const TeamDivision = () => {
     }
   };
 
+  const main = async () => {
+    for (let i = 0; i < maxLength; i++) {
+      setTimeout(() => genTBody(i, i === maxLength - 1), i * 1500);
+    }
+  };
+
+  const genTBody = (index, isEnd) => {
+    team(index);
+    if (isEnd) {
+      setIsProcessing(true);
+    }
+  };
+
   const team = (index) => {
     let random = Math.floor(Math.random() * 2);
-
     if (random === 0) {
       setHandleteam1((prev) => [...prev, team1[index]]);
       setHandleteam2((prev) => [...prev, team2[index]]);
@@ -196,19 +217,6 @@ const TeamDivision = () => {
         return r();
       }, milisecond)
     );
-  };
-
-  const main = async () => {
-    for (let i = 0; i < maxLength; i++) {
-      setTimeout(() => genTBody(i, i === maxLength - 1), i * 1500);
-    }
-  };
-
-  const genTBody = (index, isEnd) => {
-    team(index);
-    if (isEnd) {
-      setIsProcessing(true);
-    }
   };
 
   useEffect(() => {
@@ -248,6 +256,19 @@ const TeamDivision = () => {
       })
       .catch((err) => console.log("Lỗi khi gửi yêu cầu DELETE: ", err));
   };
+
+  // console.log(members)
+  // console.log(checkDraged)
+  // console.log(members.includes(checkDraged))
+
+  const test = () => {
+    for (let i = 0; i < members.length; i ++) {
+      return members[i].name
+    }
+    
+
+  }
+
 
   return (
     <div className="fuild-container app">
@@ -289,20 +310,17 @@ const TeamDivision = () => {
                         <div
                           ref={inputMember}
                           draggable="true"
-                          // className={`member-drag col-8 colBd ${isDragging ? 'red-color' : ''}`}
-                          className="member-drag col-8 colBd"
+                          className={`member-drag col-8 colBd ${members.includes(checkDraged) ? 'hide' : ''}`}
+                          // className="member-drag col-8 colBd"
                           onDragStart={dragStart}
                           onDragEnd={handleDragEnd}
                           data-name={member.name}
                           data-id={member.id}
                         >
                           {member.name}
-                          <span
-                            className={`icon-delete ${
-                              isDragging ? "hide" : ""
-                            }`}
-                          >
+                          <span>
                             <FontAwesomeIcon
+                              className="icon-delete"
                               icon={faTrashCan}
                               onClick={() => deleteOneMember(member.id)}
                             />
@@ -327,19 +345,17 @@ const TeamDivision = () => {
                         <div
                           ref={inputMember}
                           draggable="true"
-                          className="member-drag col-8 colBd"
+                          className={`member-drag col-8 colBd ${members.includes(checkDraged) ? 'hide' : ''}`}
+                          // className="member-drag col-8 colBd"
                           onDragStart={dragStart}
                           onDragEnd={handleDragEnd}
                           data-name={member.name}
                           data-id={member.id}
                         >
                           <span>{member.name}</span>
-                          <span
-                            className={`icon-delete ${
-                              isDragging ? "hide" : ""
-                            }`}
-                          >
+                          <span>
                             <FontAwesomeIcon
+                              className="icon-delete"
                               icon={faTrashCan}
                               onClick={() => deleteOneMember(member.id)}
                             />
@@ -385,6 +401,7 @@ const TeamDivision = () => {
                       <div className="row hight-row" key={index}>
                         <div className="col-4 colBd">{index}</div>
                         <div
+                          ref={selectItemRef}
                           onDragOver={dragOver}
                           onDrop={drop}
                           className="colBd"
@@ -406,6 +423,7 @@ const TeamDivision = () => {
                       <div className="row hight-row" key={index}>
                         <div className="col-4 colBd">{index}</div>
                         <div
+                          ref={selectItemRef}
                           onDragOver={dragOver}
                           onDrop={drop}
                           className="colBd"
