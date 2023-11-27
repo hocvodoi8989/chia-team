@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import Loading from "../Loading/Loading";
@@ -20,11 +21,15 @@ const TeamDivision = () => {
 
   const inputMember = useRef();
 
+  const DropRef1 = useRef();
+
+  const DropRef2 = useRef();
+
   const [handleTeam1, setHandleteam1] = useState([]);
 
   const [handleTeam2, setHandleteam2] = useState([]);
 
-  const [tempList, setTempList] = useState(Array.from({ length: 16 }));
+  const [tempList, setTempList] = useState(Array.from({ length: 8 }));
 
   const [memberSort, setMemberSort] = useState("");
 
@@ -34,7 +39,7 @@ const TeamDivision = () => {
 
   const [checkAddMember, setCheckAddMember] = useState(0);
 
-  const [checkDraged, setCheckDraged] = useState("")
+  const [checkDraged, setCheckDraged] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -134,42 +139,42 @@ const TeamDivision = () => {
   }, [isProcessing]);
 
   const dragStart = (e) => {
-    const item = e.target.innerText
     const name = e.target.getAttribute("data-name");
     const id = e.target.getAttribute("data-id");
     setMemberSort(name, id);
   };
 
   const handleDragEnd = (e) => {
-    const item = e.target.innerText
-    setCheckDraged(item)
+    const item = e.target.innerText;
+    setCheckDraged(item);
+    // console.log(item)
   };
-  
+
   const dragOver = (e) => {
     e.preventDefault();
   };
 
-  const drop = (e) => {
+  const drop = (e, id) => {
     e.preventDefault();
-    const itemDrop = e.target.innerText
+
+    const itemDrop = e.target.innerText;
+
     if (itemDrop !== "") {
       e.target.append(" + " + memberSort);
-
     } else {
       e.target.append(memberSort);
     }
-
-    const stt = e.target.previousElementSibling.textContent;
-    if (stt % 2 === 0) {
+    
+    const target = e.target.className;
+    if (target.includes('drop-item-1')) {
       setTeam1((prev) => [...prev, memberSort]);
-    } else {
+    } 
+    if (target.includes('drop-item-2')) {
       setTeam2((prev) => [...prev, memberSort]);
     }
   };
-  
-  // console.log(team1)
-  // console.log(team2)
 
+  
 
   const init = async () => {
     setHandleteam1([]);
@@ -257,18 +262,8 @@ const TeamDivision = () => {
       .catch((err) => console.log("Lỗi khi gửi yêu cầu DELETE: ", err));
   };
 
-  // console.log(members)
-  // console.log(checkDraged)
-  // console.log(members.includes(checkDraged))
-
-  const test = () => {
-    for (let i = 0; i < members.length; i ++) {
-      return members[i].name
-    }
-    
-
-  }
-
+  // console.log(team1)
+  // console.log(team2)
 
   return (
     <div className="fuild-container app">
@@ -308,16 +303,17 @@ const TeamDivision = () => {
                       <div className="row hight-row" key={index}>
                         <div className="col-4 colBd">{index}</div>
                         <div
-                          ref={inputMember}
+                          // ref={inputMember}
                           draggable="true"
-                          className={`member-drag col-8 colBd ${members.includes(checkDraged) ? 'hide' : ''}`}
-                          // className="member-drag col-8 colBd"
+                          // className={`member-drag col-8 colBd ${team1.includes(checkDraged) ? 'hide' : ''}`}
+                          className="member-drag col-8 colBd"
                           onDragStart={dragStart}
                           onDragEnd={handleDragEnd}
                           data-name={member.name}
                           data-id={member.id}
                         >
-                          {member.name}
+                          <span>{member.name}</span>
+
                           <span>
                             <FontAwesomeIcon
                               className="icon-delete"
@@ -345,8 +341,8 @@ const TeamDivision = () => {
                         <div
                           ref={inputMember}
                           draggable="true"
-                          className={`member-drag col-8 colBd ${members.includes(checkDraged) ? 'hide' : ''}`}
-                          // className="member-drag col-8 colBd"
+                          // className={`member-drag col-8 colBd ${team2.includes(checkDraged) ? 'hide' : ''}`}
+                          className="member-drag col-8 colBd"
                           onDragStart={dragStart}
                           onDragEnd={handleDragEnd}
                           data-name={member.name}
@@ -389,48 +385,44 @@ const TeamDivision = () => {
           <h3 style={{ marginTop: 6, marginBottom: 56 }}>Chọn thành viên</h3>
           <div className="mt-3">
             <div className="wrap-tb">
-              <div className="col tb-1">
+              <div ref={DropRef1} className="col tb-1">
                 <div className="row hight-row">
                   <div className="col-4 colBd">#</div>
                   <div className="col-8 colBd">Thành viên</div>
                 </div>
 
                 {tempList.map((name, index) => {
-                  if (index % 2 === 0) {
-                    return (
-                      <div className="row hight-row" key={index}>
-                        <div className="col-4 colBd">{index}</div>
-                        <div
-                          ref={selectItemRef}
-                          onDragOver={dragOver}
-                          onDrop={drop}
-                          className="colBd"
-                        ></div>
-                      </div>
-                    );
-                  }
+                  return (
+                    <div className="row hight-row" key={index}>
+                      <div className="col-4 colBd">{index+1}</div>
+                      <div
+                        ref={selectItemRef}
+                        onDragOver={dragOver}
+                        onDrop={drop}
+                        className="colBd drop-item-1"
+                      ></div>
+                    </div>
+                  );
                 })}
               </div>
 
-              <div className="col tb-2">
+              <div ref={DropRef2} className="col tb-2">
                 <div className="row hight-row">
                   <div className="col-4 colBd">#</div>
                   <div className="col-8 colBd">Thành viên</div>
                 </div>
                 {tempList.map((name, index) => {
-                  if (index % 2 !== 0) {
-                    return (
-                      <div className="row hight-row" key={index}>
-                        <div className="col-4 colBd">{index}</div>
-                        <div
-                          ref={selectItemRef}
-                          onDragOver={dragOver}
-                          onDrop={drop}
-                          className="colBd"
-                        ></div>
-                      </div>
-                    );
-                  }
+                  return (
+                    <div className="row hight-row" key={index}>
+                      <div className="col-4 colBd">{index+1}</div>
+                      <div
+                        ref={selectItemRef}
+                        onDragOver={dragOver}
+                        onDrop={drop}
+                        className="colBd drop-item-2"
+                      ></div>
+                    </div>
+                  );
                 })}
               </div>
             </div>
@@ -454,7 +446,7 @@ const TeamDivision = () => {
               {handleTeam1.map((handle1, index) => {
                 return (
                   <tr key={index}>
-                    <td>{index}</td>
+                    <td>{index+1}</td>
                     <td ref={genData}>{handle1}</td>
                   </tr>
                 );
@@ -472,7 +464,7 @@ const TeamDivision = () => {
               {handleTeam2.map((handle2, index) => {
                 return (
                   <tr key={index}>
-                    <td>{index}</td>
+                    <td>{index+1}</td>
                     <td ref={genData}>{handle2}</td>
                   </tr>
                 );
